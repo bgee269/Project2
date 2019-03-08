@@ -1,24 +1,39 @@
 var db = require("../models");
 
 module.exports = function(app) {
-  // Get all examples
-  app.get("/api/examples", function(req, res) {
-    db.Example.findAll({}).then(function(dbExamples) {
-      res.json(dbExamples);
+
+  // Get all blocks to populate the page
+  app.get("/api/blocks", function(req, res) {
+    db.Blocks.findAll({}).then(function(dbBlocks) {
+      res.json(dbBlocks);
     });
   });
 
-  // Create a new example
-  app.post("/api/examples", function(req, res) {
-    db.Example.create(req.body).then(function(dbExample) {
-      res.json(dbExample);
+  // Toggle availability of a block
+  app.put("/api/blocks", function(req, res) {
+    db.Blocks.update({
+      spotsAvailable: "??????"
+    }, {
+      where: {
+        lat1: "???"
+      }
+    }).then(function(dbBlocks) {
+      res.json(dbBlocks);
     });
   });
 
-  // Delete an example by id
-  app.delete("/api/examples/:id", function(req, res) {
-    db.Example.destroy({ where: { id: req.params.id } }).then(function(dbExample) {
-      res.json(dbExample);
+  // Post new block added to the zone
+  app.post("/api/blocks", function(req, res) {
+    db.Blocks.create(req.body).then(function(dbBlocks) {
+      res.json(dbBlocks);
     });
   });
+
+  // Delete a block if it was removed by the city
+  app.delete("/api/blocks/:id", function(req, res) {
+    db.Blocks.destroy({ where: { id: req.params.id } }).then(function(dbBlocks) {
+      res.json(dbBlocks);
+    });
+  });
+
 };
