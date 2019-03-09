@@ -87,8 +87,8 @@
         method: "PUT",
         url: "/api/greenblock",
         data: {lat1: lat1, lat2: lat2}
-      }).then(getBlocks());
-    };
+      }).then(getBlocks);
+    }; 
 
     // Function to update a block availability to false
     function updateBlockToRed(lat1, lat2) {
@@ -96,7 +96,7 @@
         method: "PUT",
         url: "/api/redblock",
         data: {lat1: lat1, lat2: lat2}
-      }).then(getBlocks());
+      }).then(getBlocks);
     };
 
     // Listen for clicks on the green button and update the block availability to true
