@@ -10,4 +10,4 @@ module.exports = function(sequelize, DataTypes) {
     spotsAvailable: DataTypes.BOOLEAN
   });
   return Blocks;
-};
+}; 
