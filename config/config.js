@@ -1,4 +1,4 @@
-const path = require('path');
+var path = require('path');
 
 module.exports = {
   'config': path.resolve('config', 'config.js')
@@ -21,9 +21,8 @@ module.exports = {
     dialect: "mysql",
     logging: false
   },
-  production: {
-    /* eslint-disable-next-line camelcase */
-    use_env_variable: JAWSDB_URL,
-    dialect: mysql
-  }
-};
+  // production: {
+  //   use_env_variable: JAWSDB_URL,
+  //   dialect: mysql
+  // }
+}; 

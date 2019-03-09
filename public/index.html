@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
+
   <head>
+
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Permit Parking</title>
+
+    <!-- Linking jQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
     <style>
       #map {
         height: 100%;
@@ -12,18 +18,159 @@
         height: 100%;
         margin: 0;
         padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10pt;
+      }
+      #modal {
+        position: fixed;
+        width: 200px;
+        height: 200px;
+        top: 50%;
+        left: 50%;
+        margin-top: -100px;
+        margin-left: -100px;
+        background-color: white;
+        -webkit-box-shadow: 0px 10px 13px -7px #000000, -1px -1px 9px 0px rgba(107,107,107,0); 
+        box-shadow: 0px 10px 13px -7px #000000, -1px -1px 9px 0px rgba(107,107,107,0);
+        z-index: 100;
+      }
+      p {
+        margin: 10px;
+      }
+      button {
+        margin: 10px;
+        padding: 5px 10px;
+        color: white;
+        font-size: 10pt;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+      }
+      .red-button {
+        background-color: #FF0000;
+      }
+      .green-button {
+        background-color: #33cc33;
       }
     </style>
+
   </head>
+
   <body>
 
     <div id="map"></div>
 
+    <div id="modal"></div>
+
     <script>
 
+    // Create a global variable for the map
+    var map;
+
+    // Hide the modal on page load
+    $("#modal").hide();
+
+    // Create an empty array to be filled with data from the database
+    var blocks = [];
+
+    // Function to get data from the database
+    function getBlocks() {
+      $.get("/api/blocks", function(data) {
+        blocks = data;
+        console.log(blocks);
+        createBlocks(blocks);
+      });
+    };
+
+    // Function to update a block availability to true
+    function updateBlockToGreen(lat1, lat2) {
+      $.ajax({
+        method: "PUT",
+        url: "/api/greenblock",
+        data: {lat1: lat1, lat2: lat2}
+      }).then(getBlocks);
+    };
+
+    // Function to update a block availability to false
+    function updateBlockToRed(lat1, lat2) {
+      $.ajax({
+        method: "PUT",
+        url: "/api/redblock",
+        data: {lat1: lat1, lat2: lat2}
+      }).then(getBlocks);
+    };
+
+    // Listen for clicks on the green button and update the block availability to true
+    $(document).on("click", ".green-button", function () {
+      var clickedLat1 = $(this).data("lat1");
+      var clickedLat2 = $(this).data("lat2");
+      console.log("Data being passed to PUT route (lat1, lat2): ", clickedLat1, clickedLat2);
+      updateBlockToGreen(clickedLat1, clickedLat2);
+      $("#modal").hide();
+      $("#modal").html("");
+    });
+
+    // Listen for clicks on the red button and update the block availability to false
+    $(document).on("click", ".red-button", function () {
+      var clickedLat1 = $(this).data("lat1");
+      var clickedLat2 = $(this).data("lat2");
+      console.log("Data being passed to PUT route (lat1, lat2): ", clickedLat1, clickedLat2);
+      updateBlockToRed(clickedLat1, clickedLat2);
+      $("#modal").hide();
+      $("#modal").html("");
+    });
+
+    // Function to show all blocks on the page
+    function createBlocks(blocks) {
+
+      var blockNames = [];
+
+      var blockCoordinates = [];
+
+      var blockAvailability = [];
+
+      for (var i = 0; i < blocks.length; i++) {
+
+        blockNames.push(
+          blocks[i].name
+        );
+
+        blockCoordinates.push(
+          [
+            {lat: parseFloat(blocks[i].lat1), lng: parseFloat(blocks[i].lng1)},
+            {lat: parseFloat(blocks[i].lat2), lng: parseFloat(blocks[i].lng2)}
+          ]
+        );
+
+        blockAvailability.push(
+          blocks[i].spotsAvailable
+        );
+
+        blockNames[i] = new google.maps.Polyline({
+          path: blockCoordinates[i],
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 10
+        });
+
+        if (blockAvailability[i] === true) {
+            blockNames[i].strokeColor = '#33cc33'
+        };
+
+        blockNames[i].setMap(map);
+
+        google.maps.event.addListener(blockNames[i], 'click', function() {
+            console.log("This block was just clicked (lat1, lat2): ", this.Ae.bounds.$, this.Ae.bounds.V);
+            $("#modal").show();
+            $("#modal").append("<p>Update the status:</p><button class='green-button' data-lat1='" + this.Ae.bounds.$ + "' data-lat2='" + this.Ae.bounds.V + "'>Spots available! :) </button><button class='red-button' data-lat1='" + this.Ae.bounds.$ + "' data-lat2='" + this.Ae.bounds.V + "'>No spots available :( </button>");
+        });
+
+      }
+    }
+
+    // Initialize the map
     function initMap() {
 
-      var map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: {lat: 39.946143, lng: -75.157941},
         mapTypeId: 'roadmap',
@@ -37,54 +184,10 @@
         }]
       });
 
-      var blockOne, blockTwo, blockThree, blockFour;
-
-      var blockNames = [blockOne, blockTwo, blockThree, blockFour];
-
-      var blockAvailability = [false, true, false, true];
-
-      var blockCoordinates = [
-        [
-        {lat: 39.943373, lng: -75.163338},
-        {lat: 39.943191, lng: -75.161839}
-        ],
-        [
-        {lat: 39.943178, lng: -75.161734},
-        {lat: 39.942993, lng: -75.160260}
-        ],
-        [
-        {lat: 39.943235, lng: -75.161776},
-        {lat: 39.943682, lng: -75.161674}
-        ],
-        [
-        {lat: 39.943701, lng: -75.161602},
-        {lat: 39.943506, lng: -75.160161}
-        ]
-      ];
-
-      for (var i = 0; i < blockNames.length; i++) {
-
-        blockNames[i] = new google.maps.Polyline({
-          path: blockCoordinates[i],
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 10
-        });
-
-        if (blockAvailability[i] === true) {
-            blockNames[i].strokeColor = '#7CFC00'
-        };
-
-        blockNames[i].setMap(map);
-
-        google.maps.event.addListener(blockNames[i], 'click', function() {
-            console.log(this.Ae.bounds.$, this.Ae.bounds.V);
-            alert('Hi! You just clicked on the block that starts at latitude ' + this.Ae.bounds.$ + ' and ends at latitude ' + this.Ae.bounds.V);
-        });
-
-      }
-
     }
+
+    // Execute the GET function on page load
+    getBlocks();
 
     </script>
 
