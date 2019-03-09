@@ -19,7 +19,6 @@ module.exports = function(app) {
     },
     {
     where: {
-      // eslint-disable-next-line undefined
       [Op.or]: [{lat1: req.body.lat1}, {lat2: req.body.lat1}]
     }
     }).then(function(dbBlocks) {
