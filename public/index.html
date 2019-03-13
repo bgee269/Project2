@@ -1,65 +1,39 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
+<head>
 
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Permit Parking</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Baloo+Thambi" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" media="screen" href="/styles/style.css">
 
-    <!-- Linking jQuery -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <title>Permit Parking</title>
 
-    <style>
-      #map {
-        height: 100%;
-      }
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 10pt;
-      }
-      #modal {
-        position: fixed;
-        width: 200px;
-        height: 200px;
-        top: 50%;
-        left: 50%;
-        margin-top: -100px;
-        margin-left: -100px;
-        background-color: white;
-        -webkit-box-shadow: 0px 10px 13px -7px #000000, -1px -1px 9px 0px rgba(107,107,107,0); 
-        box-shadow: 0px 10px 13px -7px #000000, -1px -1px 9px 0px rgba(107,107,107,0);
-        z-index: 100;
-      }
-      p {
-        margin: 10px;
-      }
-      button {
-        margin: 10px;
-        padding: 5px 10px;
-        color: white;
-        font-size: 10pt;
-        border: 1px solid lightgray;
-        border-radius: 5px;
-      }
-      .red-button {
-        background-color: #FF0000;
-      }
-      .green-button {
-        background-color: #33cc33;
-      }
-    </style>
 
-  </head>
+  <!-- Linking jQuery -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-  <body>
 
-    <div id="map"></div>
+</head>
 
-    <div id="modal"></div>
+<body>
+
+  <div id="map"></div>
+
+  <div id="modal"></div>
+
+  <footer class="page-footer indigo" id="bottomNav">
+    <div class="container" id="logoContainer">
+      <p class="white-text" id="navText">Parking Pal! Find a spot</p>
+      <img src="/images/parkingpal.png" id="dog_logo">
+    </div>
+  </footer>
 
     <script>
 
